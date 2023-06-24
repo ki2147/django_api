@@ -1,0 +1,83 @@
+Resources:
+  ProductAppStream:
+    Type: AWS::Kinesis::Stream
+    Properties:
+      Name: productapp-stream
+      ShardCount: 1
+
+  ProductAppDomain:
+    Type: AWS::OpenSearchService::Domain
+    Properties:
+      DomainName: productapp-domain
+      EngineVersion: OpenSearch_2.5
+      ClusterConfig:
+        DedicatedMasterEnabled: false
+        InstanceCount: 1
+        InstanceType: t3.small.search
+        MultiAZWithStandbyEnabled: false
+        WarmEnabled: false
+        ZoneAwarenessEnabled: false
+      EBSOptions:
+        EBSEnabled: true
+        Iops: 3000
+        Throughput: 125
+        VolumeSize: 10
+        VolumeType: gp3
+      AccessPolicies:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: "*"
+            Action: es:ESHttp*
+            Resource: !Sub arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/product-app-domain/*
+
+  ProductAppLogsToOSS:
+    Type: AWS::KinesisFirehose::DeliveryStream
+    Properties:
+      DeliveryStreamName: ProductAppLogsToOSS
+      DeliveryStreamType: KinesisStreamAsSource
+      KinesisStreamSourceConfiguration:
+        KinesisStreamARN: !GetAtt ProductAppStream.Arn
+        RoleARN: !GetAtt FirehoseDeliveryRole.Arn
+      OpenSearchDestinationConfiguration:
+        DomainARN: !GetAtt ProductAppDomain.Arn
+        RoleARN: !GetAtt FirehoseDeliveryRole.Arn
+        IndexName: product-logs
+        TypeName: _doc
+        IndexRotationPeriod: OneHour
+        BufferingHints:
+          IntervalInSeconds: 60
+          SizeInMBs: 5
+        RetryOptions:
+          DurationInSeconds: 300
+
+
+  FirehoseDeliveryRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: FirehoseDeliveryRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: firehose.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: FirehoseDeliveryPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "kinesis:DescribeStream"
+                  - "kinesis:GetShardIterator"
+                  - "kinesis:GetRecords"
+                Resource: !GetAtt ProductAppStream.Arn
+              - Effect: Allow
+                Action:
+                  - "es:ESHttpPost"
+                  - "es:ESHttpPut"
+                  - "es:DescribeDomain"
+                Resource: !GetAtt ProductAppDomain.Arn

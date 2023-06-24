@@ -1,0 +1,45 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "cloudformation:CreateStack",
+        "cloudformation:UpdateStack",
+        "cloudformation:DescribeStacks",
+        "cloudformation:DescribeStackEvents",
+        "cloudformation:DescribeStackResource"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kinesis:DescribeStream",
+        "kinesis:CreateStream",
+        "kinesis:DeleteStream",
+        "kinesis:GetShardIterator",
+        "kinesis:GetRecords",
+        "kinesis:DescribeStreamSummary"
+      ],
+      "Resource": "arn:aws:kinesis:us-east-2:983287632230:stream/product-app-stream"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "es:ESHttpPost",
+        "es:ESHttpPut",
+        "es:DescribeElasticsearchDomain"
+      ],
+      "Resource": "arn:aws:es:us-east-2:983287632230:domain/product-app-domain/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateRole",
+        "iam:AttachRolePolicy"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
