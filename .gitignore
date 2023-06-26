@@ -1,3 +1,4 @@
 productapi/.env
 .pytest_cache
 __pycache__/
+requirements.txt
