@@ -1,21 +1,9 @@
 version: 0.2
 
 phases:
-  install:
-    runtime-versions:
-      python: 3.11
-    commands:
-      - pip install -r requirements.txt  # Install project dependencies
-
   pre_build:
     commands:
-       - aws s3 cp s3://ki2147-bucket/.env ./productapi/.env  # Download .env file
-
-  build:
-    commands:
-      - pytest  # Execute the pytest command
       - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 983287632230.dkr.ecr.us-east-2.amazonaws.com
       - docker build -t productapp_api .
-      - docker tag productapp_api:latest 983287632230.dkr.ecr.us-east-2.amazonaws.com/productapp_api:latest
-      - docker push 983287632230.dkr.ecr.us-east-2.amazonaws.com/productapp_api:latest
-
+      - docker tag productapp_api:latest 983287632230.dkr.ecr.us-east-2.amazonaws.com/productapp_api:1.0
+      - docker push 983287632230.dkr.ecr.us-east-2.amazonaws.com/productapp_api:1.0
