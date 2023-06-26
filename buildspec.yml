@@ -5,8 +5,6 @@ phases:
     runtime-versions:
       python: 3.11
     commands:
-      - export MYSQLCLIENT_CFLAGS=$(pkg-config mysqlclient --cflags)  # Set MYSQLCLIENT_CFLAGS
-      - export MYSQLCLIENT_LDFLAGS=$(pkg-config mysqlclient --libs)  # Set MYSQLCLIENT_LDFLAGS
       - pip install -r requirements.txt  # Install project dependencies
 
   pre_build:
