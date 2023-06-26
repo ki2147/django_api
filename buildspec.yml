@@ -5,6 +5,7 @@ phases:
     runtime-versions:
       python: 3.11
     commands:
+      - apt-get install -y pkg-config
       - pip install -r requirements.txt  # Install project dependencies
 
   pre_build:
