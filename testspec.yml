@@ -14,8 +14,4 @@ phases:
   build:
     commands:
       - pytest  # Execute the pytest command
-      - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 983287632230.dkr.ecr.us-east-2.amazonaws.com
-      - docker build -t productapp_api .
-      - docker tag productapp_api:latest 983287632230.dkr.ecr.us-east-2.amazonaws.com/productapp_api:latest
-      - docker push 983287632230.dkr.ecr.us-east-2.amazonaws.com/productapp_api:latest
 
