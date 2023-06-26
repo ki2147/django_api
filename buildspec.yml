@@ -11,13 +11,12 @@ phases:
 
   pre_build:
     commands:
-      - aws s3 cp s3://ki2147-bucket/requirements.txt ./requirements.txt  # Download requirements.txt
-      - aws s3 cp s3://ki2147-bucket/.env ./productapi/.env  # Download .env file
+       - aws s3 cp s3://ki2147-bucket/.env ./productapi/.env  # Download .env file
 
   build:
     commands:
       - pytest  # Execute the pytest command
+      - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 983287632230.dkr.ecr.us-east-2.amazonaws.com
+      - docker build -t productapp_api .
+      - docker push 983287632230.dkr.ecr.us-east-2.amazonaws.com/productapp_api:latest
 
-artifacts:
-  files:
-    - '**/*'  # Include all files and directories in the build artifact
