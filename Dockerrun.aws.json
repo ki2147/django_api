@@ -1,7 +1,7 @@
 {
   "AWSEBDockerrunVersion": "1",
   "Image": {
-    "Name": "983287632230.dkr.ecr.us-east-2.amazonaws.com/productapp_api:1.0",
+    "Name": "983287632230.dkr.ecr.us-east-2.amazonaws.com/productapp_api:1.0.1",
     "Update": "true"
   },
   "Ports": [
