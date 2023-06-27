@@ -1,0 +1,8 @@
+version: 0.2
+
+phases:
+  post_build:
+    commands:
+      - echo Deploying the Docker image to AWS Elastic Beanstalk...
+      - aws elasticbeanstalk create-application-version --application-name ProductApp --version-label 1.0.1
+      - aws elasticbeanstalk update-environment --environment-name ProductApp-environment --version-label 1.0.1
